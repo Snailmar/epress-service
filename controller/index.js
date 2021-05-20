@@ -1,6 +1,6 @@
 var mongoConfig = require('../config/mongo')
 const MongoClient = require('mongodb').MongoClient;
-const db={}
+const db = {}
 // add
 // db.add=(collection,data={})=>{
 // const client = new MongoClient(mongoConfig.host)
@@ -19,29 +19,29 @@ const db={}
 
 //     })
 // }
-db.find=(collection,data)=>{
-const client = new MongoClient(mongoConfig.host)
-    return new Promise((resolve,reject)=>{
+db.find = (collection, data,sort={}) => {
+    const client = new MongoClient(mongoConfig.host)
+    return new Promise((resolve, reject) => {
         client.connect(function (err) {
             const db = client.db(mongoConfig.database)
-           db.collection(collection).find(data).toArray((err,result) =>{
-               if(err){
-                   return
-               }
-               resolve(result);
-           })
+            db.collection(collection).find(data).sort(sort).toArray((err, result) => {
+                if (err) {
+                    return
+                }
+                resolve(result);
+            })
         })
 
     })
 }
-db.insert=(collection, data)=>{
-const client = new MongoClient(mongoConfig.host)
-    return new Promise((resolve,reject)=>{
+db.insert = (collection, data) => {
+    const client = new MongoClient(mongoConfig.host)
+    return new Promise((resolve, reject) => {
         client.connect(function (err) {
             const db = client.db(mongoConfig.database)
-            console.log(db,'9900')
-            db.collection(collection).insertOne(data).then((err,result)=>{
-                if(err){
+            console.log(db, '9900')
+            db.collection(collection).insertOne(data).then((err, result) => {
+                if (err) {
                     return
                 }
                 resolve(result);
@@ -51,12 +51,13 @@ const client = new MongoClient(mongoConfig.host)
 
     })
 }
-db.update=(collection,data,newData)=>{
-const client = new MongoClient(mongoConfig.host)
-    return new Promise((resolve,reject)=>{
+db.update = (collection, data, newData) => {
+    const client = new MongoClient(mongoConfig.host)
+    return new Promise((resolve, reject) => {
         client.connect(function (err) {
             const db = client.db(mongoConfig.database)
-            db.collection(collection).updateOne(data, newData,{upsert:true},(err, result) => {
+            db.collection(collection).updateOne(data, newData, { upsert: true }, (err, result) => {
+                console.log(result, 7788)
                 if (err) {
                     return;
                 }

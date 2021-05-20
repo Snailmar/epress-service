@@ -36,29 +36,38 @@ router.post("/getlogin", async function (req, res, next) {
   })();
 });
 // 内容id获取播放专辑
-router.post('/get_content', async (req, res) => {
-  var query = req.body
+router.get('/get_content', async (req, res) => {
+  var query = req.query
   console.log('query',query)
-  const dbres = await db.find('content', { content_id: Number(query.content_id) })
-  console.log('dbres',dbres)
-  res.send({message:dbres[0]||[]})
+  const dbRes = await db.find('content', { content_id: Number(query.content_id) })
+  console.log('dbRes',dbRes)
+  res.send({message:dbRes[0]||[]})
 })
 
 // 检测是否存在用户，不存在就创建一个用户
 async function checkUserExist(openid) {
+  const res = await findUserByOpenid(openid)
+ if(!res){
+   process.nextTick(() => {
+     db.insert('user', { openid })
+   })
+ }
+}
+// 查找用户
+async function findUserByOpenid(openid){
   const res = await db.find('user', { openid })
-  console.log('res::', res)
-  if (res && res.length) {
-    return
-  }
-  process.nextTick(() => {
-    db.insert('user', { openid })
-  })
+  return res && res.length
 }
 // 加入书架
 router.post('/add_to_bookshelf',async(req,res)=>{
   console.log('add_to_bookshelf:',req.body)
   db.update('bookshelf',{openid:req.body.openid},{'$addToSet':{data:req.body}})
   res.send({})
+})
+// 查找书架
+router.get('/get_bookshelf',async(req,res)=>{
+  const dbRes =await db.find('bookshelf',{openid:req.query.openid})
+console.log("bookshelf:",dbRes)
+  res.send({message:dbRes[0]||[]})
 })
 module.exports = router;
