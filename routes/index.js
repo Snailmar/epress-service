@@ -70,4 +70,9 @@ router.get('/get_bookshelf',async(req,res)=>{
 console.log("bookshelf:",dbRes)
   res.send({message:dbRes[0]||[]})
 })
+// 获取banner
+router.get('/get_banner',async(req,res)=>{
+  const dbRes =await db.find('banner',{})
+  res.send({message:dbRes[0]||[]})
+})
 module.exports = router;
